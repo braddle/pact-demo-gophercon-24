@@ -1,4 +1,4 @@
-package consumer
+package client_test
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"os"
+	client "scoop-dash/consumer"
 	"testing"
 )
 
@@ -23,14 +24,16 @@ func TestHealthcheck(t *testing.T) {
 		Given("The SccopDash service is up an health").
 		UponReceiving("A health check request").
 		WithRequest(http.MethodGet, "/health").
-		WillRespondWith(http.StatusOK)
+		WillRespondWith(http.StatusOK, func(b *consumer.V2ResponseBuilder) {
+			b.BodyMatch(&client.HealthStatus{})
+		})
 
 	err := pact.ExecuteTest(t, func(config consumer.MockServerConfig) error {
-		client := NewClient(fmt.Sprintf("%s:%d", config.Host, config.Port))
-		health, err := client.healthcheck()
+		c := client.NewClient(fmt.Sprintf("%s:%d", config.Host, config.Port))
+		health, err := c.Healthcheck()
 
 		assert.NoError(t, err)
-		assert.Equal(t, "OK", health.status)
+		assert.Equal(t, "OK", health.Status)
 
 		return err
 	})
