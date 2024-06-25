@@ -3,6 +3,7 @@ package client_test
 import (
 	"fmt"
 	"github.com/pact-foundation/pact-go/v2/consumer"
+	"github.com/pact-foundation/pact-go/v2/matchers"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"os"
@@ -23,7 +24,9 @@ func TestHealthcheck(t *testing.T) {
 	pact.AddInteraction().
 		Given("The SccopDash service is up an health").
 		UponReceiving("A health check request").
-		WithRequest(http.MethodGet, "/health").
+		WithRequest(http.MethodGet, "/health", func(b *consumer.V2RequestBuilder) {
+			b.Header("Accept", matchers.Equality("application/json"))
+		}).
 		WillRespondWith(http.StatusOK, func(b *consumer.V2ResponseBuilder) {
 			b.BodyMatch(&client.HealthStatus{})
 		})

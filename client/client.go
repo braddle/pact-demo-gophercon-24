@@ -17,7 +17,12 @@ type HealthStatus struct {
 func (c Client) Healthcheck() (HealthStatus, error) {
 	url := fmt.Sprintf("http://%s/health", c.host)
 
-	resp, _ := http.Get(url)
+	req, _ := http.NewRequest(http.MethodGet, url, nil)
+	req.Header.Add("Accept", "application/json")
+
+	client := http.Client{}
+	resp, _ := client.Do(req)
+
 	hs := HealthStatus{}
 	json.NewDecoder(resp.Body).Decode(&hs)
 	return hs, nil
