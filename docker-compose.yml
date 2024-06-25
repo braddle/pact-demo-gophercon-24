@@ -1,7 +1,7 @@
 services:
   consumer:
     build:
-      context: client
+      context: consumer
       dockerfile: Dockerfile
     secrets:
       - pactflow_token
@@ -10,7 +10,7 @@ services:
     environment:
       HOST: ':8081'
     volumes:
-      - ./client:/code
+      - ./consumer:/code
 
 secrets:
   pactflow_token:
