@@ -101,4 +101,6 @@ fabric.properties
 go.work
 
 **/pacts
+**/pact
+pactflow_token.txt
 
