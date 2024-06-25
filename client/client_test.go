@@ -32,7 +32,8 @@ func TestHealthcheck(t *testing.T) {
 		})
 
 	err := pact.ExecuteTest(t, func(config consumer.MockServerConfig) error {
-		c := client.NewClient(fmt.Sprintf("%s:%d", config.Host, config.Port))
+
+		c := client.NewClient(fmt.Sprintf("http://%s:%d", config.Host, config.Port))
 		health, err := c.Healthcheck()
 
 		assert.NoError(t, err)

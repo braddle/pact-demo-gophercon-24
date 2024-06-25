@@ -15,7 +15,7 @@ type HealthStatus struct {
 }
 
 func (c Client) Healthcheck() (HealthStatus, error) {
-	url := fmt.Sprintf("http://%s/health", c.host)
+	url := fmt.Sprintf("%s/health", c.host)
 
 	req, _ := http.NewRequest(http.MethodGet, url, nil)
 	req.Header.Add("Accept", "application/json")
