@@ -11,6 +11,19 @@ services:
       HOST: ':8081'
     volumes:
       - ./consumer:/code
+  producer:
+    build:
+      context: ./producer
+      dockerfile: Dockerfile
+    secrets:
+      - pactflow_token
+    ports:
+      - "8082:8082"
+    environment:
+      HOST: ':8082'
+    volumes:
+      - ./producer:/code
+    entrypoint: go run main.go
 
 secrets:
   pactflow_token:
