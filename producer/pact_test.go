@@ -13,12 +13,14 @@ func TestPacts(t *testing.T) {
 
 	publish := os.Getenv("PUBLISH") == "yes"
 
+	token, _ := os.ReadFile("/run/secrets/pactflow_token")
+
 	err := pact.VerifyProvider(t, provider.VerifyRequest{
 		ProviderBaseURL:            fmt.Sprintf("http://localhost%s", os.Getenv("HOST")),
 		BrokerURL:                  "https://testingallthethings.pactflow.io/",
 		Provider:                   "ScoopDash",
-		BrokerToken:                "HwK7pR4-GTVCCPjN8a_JWw",
-		ProviderVersion:            "1.0",
+		BrokerToken:                string(token),
+		ProviderVersion:            "1.1",
 		PublishVerificationResults: publish,
 	})
 
