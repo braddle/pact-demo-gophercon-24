@@ -6,6 +6,7 @@ import (
 	"github.com/pact-foundation/pact-go/v2/matchers"
 	"github.com/stretchr/testify/assert"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	client "scoop-dash/consumer"
 	"testing"
@@ -79,6 +80,38 @@ func TestGetIceCreamWhiteChocolateMagnum(t *testing.T) {
 	})
 
 	assert.NoError(t, err)
+}
+
+func TestHandleInvalidHost(t *testing.T) {
+	c := client.NewClient("::::::::")
+
+	_, err := c.GetIceCream("white-chocolate-magnum")
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "Error creating request")
+}
+
+func TestHandleConnectionFailure(t *testing.T) {
+	c := client.NewClient("http://localhost:1111")
+
+	_, err := c.GetIceCream("white-chocolate-magnum")
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "Error making request to server")
+}
+
+func TestHandlesInvalidContentInResponse(t *testing.T) {
+	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("<json>INVALID</json>"))
+	}))
+	defer s.Close()
+
+	c := client.NewClient(s.URL)
+
+	_, err := c.GetIceCream("white-chocolate-magnum")
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "Invalid response body")
 }
 
 func TestMain(m *testing.M) {

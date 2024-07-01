@@ -58,16 +58,25 @@ func (c Client) Healthcheck() (HealthStatus, error) {
 }
 
 func (c Client) GetIceCream(id string) (IceCream, error) {
+	ic := IceCream{}
 	url := fmt.Sprintf("%s/icecream/white-chocolate-magnum", c.host)
 
-	req, _ := http.NewRequest(http.MethodGet, url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return ic, fmt.Errorf("Error creating request: %s", err.Error())
+	}
 	req.Header.Add("Accept", "application/json")
 
 	client := http.Client{}
-	resp, _ := client.Do(req)
+	resp, err := client.Do(req)
+	if err != nil {
+		return ic, fmt.Errorf("Error making request to server: %s", err.Error())
+	}
 
-	ic := IceCream{}
-	json.NewDecoder(resp.Body).Decode(&ic)
+	err = json.NewDecoder(resp.Body).Decode(&ic)
+	if err != nil {
+		return ic, fmt.Errorf("Invalid response body: %s", err.Error())
+	}
 	return ic, nil
 }
 
