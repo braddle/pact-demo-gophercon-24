@@ -48,7 +48,8 @@ func TestHealthcheck(t *testing.T) {
 
 func TestGetIceCreamWhiteChocolateMagnum(t *testing.T) {
 	pact.AddInteraction().
-		UponReceiving("A request for an ice cream that does not exist").
+		Given("The is an ice cream white-chocolate-magnum").
+		UponReceiving("A request for an ice cream with ID white-chocolate-magnum").
 		WithRequest(http.MethodGet, "/icecream/white-chocolate-magnum", func(b *consumer.V2RequestBuilder) {
 			b.Header("Accept", matchers.Equality("application/json"))
 		}).
@@ -112,6 +113,30 @@ func TestHandlesInvalidContentInResponse(t *testing.T) {
 
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "Invalid response body")
+}
+
+func TestGetIceCreamThatDoesNotExists(t *testing.T) {
+	pact.AddInteraction().
+		UponReceiving("A request for an ice cream with ID coffee-and-chocolate-magnum").
+		WithRequest(http.MethodGet, "/icecream/coffee-and-chocolate-magnum", func(b *consumer.V2RequestBuilder) {
+			b.Header("Accept", matchers.Equality("application/json"))
+		}).
+		WillRespondWith(http.StatusNotFound, func(b *consumer.V2ResponseBuilder) {
+			b.BodyMatch(&client.HTTPError{})
+		})
+
+	err := pact.ExecuteTest(t, func(config consumer.MockServerConfig) error {
+		c := client.NewClient(fmt.Sprintf("http://%s:%d", config.Host, config.Port))
+
+		_, err := c.GetIceCream("coffee-and-chocolate-magnum")
+
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "No ice cream with ID: coffee-and-chocolate-magnum (404)")
+
+		return nil
+	})
+
+	assert.NoError(t, err)
 }
 
 func TestMain(m *testing.M) {

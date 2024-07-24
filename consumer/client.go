@@ -15,8 +15,8 @@ type HealthStatus struct {
 }
 
 type HTTPError struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
+	Status  int    `json:"status" pact:"example=404"`
+	Message string `json:"message" pact:"example=No ice cream with ID: coffee-and-chocolate-magnum"`
 }
 
 type IceCream struct {
@@ -59,7 +59,7 @@ func (c Client) Healthcheck() (HealthStatus, error) {
 
 func (c Client) GetIceCream(id string) (IceCream, error) {
 	ic := IceCream{}
-	url := fmt.Sprintf("%s/icecream/white-chocolate-magnum", c.host)
+	url := fmt.Sprintf("%s/icecream/%s", c.host, id)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -71,6 +71,12 @@ func (c Client) GetIceCream(id string) (IceCream, error) {
 	resp, err := client.Do(req)
 	if err != nil {
 		return ic, fmt.Errorf("Error making request to server: %s", err.Error())
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		httpErr := HTTPError{}
+		json.NewDecoder(resp.Body).Decode(&httpErr)
+		return ic, fmt.Errorf("%s (%d)", httpErr.Message, httpErr.Status)
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(&ic)

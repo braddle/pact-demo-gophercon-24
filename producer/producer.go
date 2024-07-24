@@ -11,6 +11,12 @@ type HealthStatus struct {
 	Status string `json:"status"`
 }
 
+type HTTPError struct {
+	Status    int    `json:"status"`
+	Message   string `json:"message"`
+	ErrorCode int    `json:"error_code"`
+}
+
 type IceCream struct {
 	ID                  string       `json:"id"`
 	Barcode             string       `json:"barcode"`
@@ -49,6 +55,19 @@ func GetRouter() *mux.Router {
 
 	r.HandleFunc("/icecream/{id}", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
+
+		if vars["id"] != "white-chocolate-magnum" {
+			he := HTTPError{
+				Status:    404,
+				Message:   "Cannot find Ice cream you want",
+				ErrorCode: 999,
+			}
+
+			w.Header().Add("Content-Type", "application/json")
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(he)
+			return
+		}
 
 		ic := IceCream{
 			ID:      vars["id"],
