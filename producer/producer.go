@@ -1,11 +1,10 @@
-package main
+package producer
 
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"os"
 )
 
 type HealthStatus struct {
@@ -36,7 +35,7 @@ type Manufacturer struct {
 	Address string `json:"address"`
 }
 
-func main() {
+func GetRouter() *mux.Router {
 	r := mux.NewRouter()
 	r.Use(loggingMiddleware)
 
@@ -78,8 +77,7 @@ func main() {
 		json.NewEncoder(w).Encode(ic)
 	})
 
-	log.Println("Server Stating")
-	log.Panic(http.ListenAndServe(os.Getenv("HOST"), r).Error())
+	return r
 }
 
 func loggingMiddleware(next http.Handler) http.Handler {

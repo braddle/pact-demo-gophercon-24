@@ -14,3 +14,6 @@ RUN apt install -y uuid
 RUN curl -LO https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v2.4.6/pact-2.4.6-linux-x86_64.tar.gz
 RUN tar xzf pact-2.4.6-linux-x86_64.tar.gz -C /
 ENV PATH $PATH:/pact/bin
+
+#Keep the docker container running
+CMD tail -f /dev/null

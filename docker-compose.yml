@@ -23,7 +23,6 @@ services:
       HOST: ':8082'
     volumes:
       - ./producer:/code
-    entrypoint: go run main.go
 
 secrets:
   pactflow_token:
