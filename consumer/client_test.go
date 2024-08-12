@@ -48,11 +48,14 @@ func TestHealthcheck(t *testing.T) {
 
 func TestGetIceCreamWhiteChocolateMagnum(t *testing.T) {
 	pact.AddInteraction().
-		Given("The is an ice cream white-chocolate-magnum").
+		Given("There is an ice cream white-chocolate-magnum").
 		UponReceiving("A request for an ice cream with ID white-chocolate-magnum").
-		WithRequest(http.MethodGet, "/icecream/white-chocolate-magnum", func(b *consumer.V2RequestBuilder) {
+		WithRequestPathMatcher(http.MethodGet, matchers.Regex("/icecream/white-chocolate-magnum", "\\/icecream\\/[a-z0-9-]+"), func(b *consumer.V2RequestBuilder) {
 			b.Header("Accept", matchers.Equality("application/json"))
 		}).
+		//WithRequest(http.MethodGet, "/icecream/white-chocolate-magnum", func(b *consumer.V2RequestBuilder) {
+		//	b.Header("Accept", matchers.Equality("application/json"))
+		//}).
 		WillRespondWith(http.StatusOK, func(b *consumer.V2ResponseBuilder) {
 			b.BodyMatch(&client.IceCream{})
 		})

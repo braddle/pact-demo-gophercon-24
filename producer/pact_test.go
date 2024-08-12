@@ -2,6 +2,7 @@ package producer_test
 
 import (
 	"fmt"
+	"github.com/pact-foundation/pact-go/v2/models"
 	"github.com/pact-foundation/pact-go/v2/provider"
 	"github.com/pact-foundation/pact-go/v2/utils"
 	"github.com/stretchr/testify/assert"
@@ -31,6 +32,12 @@ func TestPacts(t *testing.T) {
 		BrokerToken:                string(token),
 		ProviderVersion:            "1.1",
 		PublishVerificationResults: publish,
+		StateHandlers: models.StateHandlers{
+			"There is an ice cream white-chocolate-magnum": func(setup bool, state models.ProviderState) (models.ProviderStateResponse, error) {
+				t.Log("\n\nSTATE HANDLER\n\n")
+				return models.ProviderStateResponse{"ID": "1234567890"}, nil
+			},
+		},
 	})
 
 	assert.NoError(t, err)

@@ -1,5 +1,5 @@
 test:
-	go test ./...
+	go test ./... -v
 
 test-publish:
-	PUBLISH=yes go test ./...
+	PUBLISH=yes go test ./... -v
