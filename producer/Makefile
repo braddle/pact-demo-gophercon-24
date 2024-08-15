@@ -1,5 +1,5 @@
 test:
-	go test ./... -v
+	VER="0.0.1-beta" go test ./... -v
 
 test-publish:
-	PUBLISH=yes go test ./... -v
+	PUBLISH=yes VER=$(VERSION) go test ./... -v

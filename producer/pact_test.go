@@ -22,6 +22,7 @@ func TestPacts(t *testing.T) {
 	go startTestServer()
 
 	publish := os.Getenv("PUBLISH") == "yes"
+	version := os.Getenv("VER")
 
 	token, _ := os.ReadFile("/run/secrets/pactflow_token")
 
@@ -30,7 +31,8 @@ func TestPacts(t *testing.T) {
 		BrokerURL:                  "https://testingallthethings.pactflow.io/",
 		Provider:                   "ScoopDash",
 		BrokerToken:                string(token),
-		ProviderVersion:            "1.1",
+		ProviderVersion:            version,
+		ProviderBranch:             "main",
 		PublishVerificationResults: publish,
 		StateHandlers: models.StateHandlers{
 			"There is an ice cream white-chocolate-magnum": func(setup bool, state models.ProviderState) (models.ProviderStateResponse, error) {

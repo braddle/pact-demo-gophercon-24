@@ -79,6 +79,7 @@ func TestGetIceCreamWhiteChocolateMagnum(t *testing.T) {
 		assert.Equal(t, "https://www.eden-farm.co.uk/media/catalog/product/cache/e70602422d911f0edb0b0d50a9ac95bc/f/1/f1300eec6c4489d61d37f2c6b91602e1.jpg", ic.Images[0].URL)
 		assert.Equal(t, int64(700), ic.Images[0].Width)
 		assert.Equal(t, int64(700), ic.Images[0].Height)
+		//assert.Equal(t, int64(2020), ic.YearOfRelease)
 
 		return err
 	})

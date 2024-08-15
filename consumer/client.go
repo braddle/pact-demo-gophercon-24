@@ -29,6 +29,7 @@ type IceCream struct {
 	RecyclablePackaging bool         `json:"recyclable_packaging" pact:"example=true"`
 	Rating              float64      `json:"rating" pact:"example=4.2"`
 	Images              []Image      `json:"images"`
+	//YearOfRelease       int64        `json:"year_of_release" pact:"example=2020"`
 }
 
 type Image struct {
