@@ -27,6 +27,7 @@ type IceCream struct {
 	RecyclablePackaging bool         `json:"recyclable_packaging"`
 	Rating              float64      `json:"rating"`
 	Images              []Image      `json:"images"`
+	NotUsed             string       `json:"not_used"`
 }
 
 type Image struct {
@@ -89,6 +90,7 @@ func GetRouter() *mux.Router {
 					Height: 600,
 				},
 			},
+			NotUsed: "Definitely Not Used by the consumer",
 		}
 
 		w.Header().Add("Content-Type", "application/json")
